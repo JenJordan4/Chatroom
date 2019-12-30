@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>The Loneliest Chatroom</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC|Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+      *{
+        box-sizing: border-box;
+      }
+      body{
+        background-image: url('./bkg.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+      }
+      #main{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 10px;
+        margin: 0 10%;
+        background-color: transparent;
+        font-family: 'Noto Sans SC', sans-serif;
+      }
+      #heading{
+        display: grid;
+        place-items: center;
+        background-color: rgba(240, 248, 255, 0.3);
+        font-family: 'Permanent Marker', cursive; 
+        border-radius: 10px;
+        padding: 30px;
+      }
+      h1, h3{
+        margin: 0;
+        text-shadow: 3px 3px 3px lightgray;
+      }
+      #chatbox{
+        height: 400px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        display: grid;
+        grid-template-columns: 1fr;
+        align-content: start;
+        overflow-y: scroll;
+      }
+      .text {
+        color: #cfd8dc blue-grey lighten-4; 
+      }
+      .message{
+        display: grid;
+        grid-template-columns: 1fr 65px 10fr 1fr;
+        grid-gap: 10px;
+        padding: 5px;
+        border-radius: 5px;
+      }
+      .message:hover{
+        background-color: lightgray;
+      }
+      input{
+        width: 100%;
+        font-size: 1.5rem;
+        padding: 5px;
+      }
+      button{
+        font-size: 1.5rem;
+        padding: 5px;
+        cursor: pointer;
+        font-family: 'Noto Sans SC', sans-serif;
+      }
+      .sender{
+        color: blue;
+      }
+      .delete{
+        cursor: pointer;
+        justify-self: end;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main">
+      <div id="heading">
+        <h1>The Loneliest Chatroom</h1>
+        <h3>No Friends? No Problem!</h3>
+      </div>
+      <div id="chatbox">
+        <div class="message" id="2">
+          <span>10:22</span>
+          <span class="sender">Myself:</span>
+          <span>Is it me you're looking for?</span>
+          <span class="delete">❌</span>
+        </div>
+        <div class="message" id="1">
+          <span>10:21</span>
+          <span class="sender">Me:</span>
+          <span>Hello?</span>
+          <span class="delete">❌</span>
+        </div>
+      </div>
+      <form>
+        <div class="input-field">
+          <input type="text" style="color: #fff;"/>
+          <label for="text">Talk to yourself</label>
+        </div>
+      </form>
+      <button>I'm feeling Lonely!</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      function getSender(){
+        const senders = ["Me", "Myself", "I"]
+        const joke = ''
+        return senders[Math.floor(Math.random()*senders.length)]
+      }
+      function handleFormSubmit(event){
+        event.preventDefault()
+        const now = new Date()      
+        message = `
+          <div class="message" id="1">
+            <span>${now.getHours()}:${now.getMinutes()}</span>
+            <span class="sender">${getSender()}:</span>
+            <span>${input.value}</span>
+            <span class="delete">❌</span>
+          </div>`
+        chatBox.innerHTML = message + chatBox.innerHTML
+        input.value = ''
+      }
+      function norrisJoke(data){
+        const now = new Date();   
+        const joke = data.value.joke;
+        message = `
+          <div class="message" id="1">
+            <span>${now.getHours()}:${now.getMinutes()}</span>
+            <span class="sender">Fact:</span>
+            <span>${joke}</span>
+            <span class="delete">❌</span>
+          </div>`
+        chatBox.innerHTML = message + chatBox.innerHTML;
+      }
+      function getJoke(){
+        fetch('https://api.icndb.com/jokes/random')
+          .then(response => response.json().then(norrisJoke))
+          .catch(error => "Chuck Norris makes no errors, but this webpage did.")
+      }
+      const form = document.querySelector('form')
+      const input = document.querySelector('input')
+      const chatBox = document.querySelector('#chatbox')
+      const lonelyButton = document.querySelector('button')
+      chatBox.addEventListener('click', function (event) {
+        if (!event.target.classList.contains('delete')) return;
+        event.target.parentNode.remove()
+      });
+      form.addEventListener('submit', handleFormSubmit)
+      lonelyButton.addEventListener('click', getJoke)
+    </script>
+  </body>
+</html>
